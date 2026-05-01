@@ -1,0 +1,136 @@
+const { Recipe } = require('../models');
+
+const defaultRecipes = [
+  {
+    title: "Granny's Classic Apple Pie",
+    description: "A warm, golden apple pie with a flaky butter crust and fragrant cinnamon filling. This recipe has been passed down through three generations and never fails to bring the family together.",
+    image: "https://images.unsplash.com/photo-1568571780765-9276ac8b75a2?w=800&q=80",
+    ingredients: ["6 large Granny Smith apples", "¾ cup granulated sugar", "2 tbsp all-purpose flour", "1 tsp cinnamon", "¼ tsp nutmeg", "1 tbsp lemon juice", "1 tbsp butter", "2 refrigerated pie crusts", "1 egg (for egg wash)", "1 tbsp coarse sugar"],
+    instructions: ["Preheat oven to 425°F (220°C).", "Peel, core, and slice apples thinly.", "Toss apples with sugar, flour, cinnamon, nutmeg, and lemon juice.", "Line a 9-inch pie dish with one crust.", "Fill with apple mixture and dot with butter.", "Cover with the second crust, crimp edges, and cut slits for steam.", "Brush with beaten egg and sprinkle with coarse sugar.", "Bake 45-50 minutes until golden and bubbly.", "Let cool at least 30 minutes before serving."],
+    category: "desserts",
+    secretTip: "Add a tiny pinch of cardamom to the filling — it adds a magical warmth that everyone notices but can't quite place!",
+    servings: 8,
+    prepTime: "30 min",
+    cookTime: "50 min",
+  },
+  {
+    title: "Fluffy Buttermilk Pancakes",
+    description: "Light, fluffy pancakes with a golden exterior and cloud-like interior. Granny always said the secret is to never over-mix the batter.",
+    image: "https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=800&q=80",
+    ingredients: ["1½ cups all-purpose flour", "3½ tsp baking powder", "1 tsp salt", "1 tbsp sugar", "1¼ cups buttermilk", "1 egg", "3 tbsp melted butter", "1 tsp vanilla extract", "Maple syrup & fresh berries for serving"],
+    instructions: ["Whisk together flour, baking powder, salt, and sugar in a large bowl.", "Create a well in the center and pour in buttermilk, egg, melted butter, and vanilla.", "Stir until just combined — lumps are perfectly fine!", "Heat a griddle or non-stick pan over medium heat and lightly butter it.", "Pour ¼ cup batter per pancake onto the griddle.", "Cook until bubbles form on the surface and edges look set (about 2 minutes).", "Flip and cook another 1-2 minutes until golden brown.", "Serve stacked with maple syrup, butter, and fresh berries."],
+    category: "breakfast",
+    secretTip: "Let the batter rest for 5 minutes before cooking — the baking powder activates and makes them extra fluffy!",
+    servings: 4,
+    prepTime: "10 min",
+    cookTime: "15 min",
+  },
+  {
+    title: "Creamy Chicken Tikka Masala",
+    description: "Tender marinated chicken pieces in a rich, creamy tomato sauce with aromatic spices. Granny learned this recipe during her travels and made it her own.",
+    image: "https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=800&q=80",
+    ingredients: ["1.5 lbs chicken breast, cubed", "1 cup yogurt", "2 tbsp lemon juice", "2 tsp cumin", "2 tsp paprika", "1 tsp turmeric", "1 tsp garam masala", "1 large onion, diced", "4 cloves garlic, minced", "1 inch ginger, grated", "1 can crushed tomatoes", "1 cup heavy cream", "Fresh cilantro", "Basmati rice for serving"],
+    instructions: ["Mix yogurt, lemon juice, cumin, paprika, turmeric in a bowl.", "Marinate chicken in the mixture for at least 2 hours (overnight is best).", "Grill or broil chicken pieces until lightly charred, about 5-6 minutes per side.", "In a large pan, sauté onion until golden.", "Add garlic, ginger, and garam masala, cook 1 minute.", "Pour in crushed tomatoes and simmer 15 minutes.", "Stir in heavy cream and add the grilled chicken.", "Simmer on low for 10 minutes until sauce thickens.", "Garnish with fresh cilantro and serve over basmati rice."],
+    category: "lunch",
+    secretTip: "Add a tablespoon of honey to the sauce at the end — it balances the acidity and makes the flavors sing!",
+    servings: 4,
+    prepTime: "20 min + marinating",
+    cookTime: "35 min",
+  },
+  {
+    title: "Mediterranean Quinoa Bowl",
+    description: "A vibrant, nutrient-packed bowl bursting with Mediterranean flavors. Fresh vegetables, creamy feta, and a zesty lemon dressing make this a healthy delight.",
+    image: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=800&q=80",
+    ingredients: ["1 cup quinoa", "1 cucumber, diced", "1 cup cherry tomatoes, halved", "½ red onion, thinly sliced", "½ cup kalamata olives", "½ cup crumbled feta cheese", "1 can chickpeas, drained", "Fresh parsley & mint", "3 tbsp olive oil", "2 tbsp lemon juice", "1 tsp dried oregano", "Salt & pepper to taste"],
+    instructions: ["Cook quinoa according to package directions and let cool.", "Prepare all vegetables: dice cucumber, halve tomatoes, slice onion.", "Drain and rinse chickpeas.", "Whisk together olive oil, lemon juice, oregano, salt, and pepper for the dressing.", "In a large bowl, combine quinoa, vegetables, chickpeas, and olives.", "Pour dressing over the bowl and toss gently.", "Top with crumbled feta and fresh herbs.", "Serve at room temperature or slightly chilled."],
+    category: "healthy",
+    secretTip: "Toast the quinoa in a dry pan for 2 minutes before boiling — it adds a lovely nutty flavor!",
+    servings: 3,
+    prepTime: "15 min",
+    cookTime: "15 min",
+  },
+  {
+    title: "Nonna's Spaghetti Carbonara",
+    description: "An authentic Roman carbonara with silky egg sauce, crispy guanciale, and a generous shower of Pecorino Romano. Simple ingredients, extraordinary flavor.",
+    image: "https://images.unsplash.com/photo-1612874742237-6526221588e3?w=800&q=80",
+    ingredients: ["400g spaghetti", "200g guanciale (or pancetta)", "4 large egg yolks + 2 whole eggs", "1 cup Pecorino Romano, finely grated", "Freshly cracked black pepper", "Salt for pasta water"],
+    instructions: ["Bring a large pot of heavily salted water to a rolling boil.", "Cut guanciale into small strips or lardons.", "Cook guanciale in a cold pan over medium heat until crispy and golden (8-10 min).", "Whisk together egg yolks, whole eggs, and most of the Pecorino in a bowl.", "Add lots of freshly cracked black pepper to the egg mixture.", "Cook spaghetti until 1 minute shy of al dente, reserving 1 cup pasta water.", "Add hot pasta directly to the guanciale pan (heat OFF).", "Quickly pour in egg mixture, tossing vigorously with tongs.", "Add splashes of pasta water until you get a silky, creamy sauce.", "Serve immediately with remaining Pecorino and more black pepper."],
+    category: "italian",
+    secretTip: "The #1 rule: NEVER add cream! True carbonara gets its creaminess from the eggs and cheese alone. And always take the pan OFF heat before adding the eggs!",
+    servings: 4,
+    prepTime: "10 min",
+    cookTime: "20 min",
+  },
+  {
+    title: "Kung Pao Chicken",
+    description: "A legendary Sichuan dish with tender chicken, crunchy peanuts, and a bold sauce that perfectly balances sweet, sour, salty, and spicy.",
+    image: "https://images.unsplash.com/photo-1525755662778-989d0524087e?w=800&q=80",
+    ingredients: ["1.5 lbs chicken thigh, cubed", "½ cup roasted peanuts", "2 tbsp soy sauce", "1 tbsp rice vinegar", "1 tbsp hoisin sauce", "2 tsp sesame oil", "1 tbsp cornstarch", "8-10 dried red chilies", "3 cloves garlic, minced", "1 inch ginger, minced", "3 green onions, chopped", "1 tbsp sugar", "2 tbsp vegetable oil", "Steamed rice for serving"],
+    instructions: ["Toss chicken cubes with 1 tbsp soy sauce and cornstarch.", "Mix remaining soy sauce, rice vinegar, hoisin, sesame oil, and sugar for the sauce.", "Heat vegetable oil in a wok over high heat.", "Add dried chilies and stir until fragrant (30 seconds — don't burn them!).", "Add chicken and stir-fry until golden, about 5-6 minutes.", "Add garlic and ginger, cook 30 seconds.", "Pour in the sauce mixture and toss to coat.", "Add peanuts and green onions, toss for 1 minute.", "Serve immediately over steamed rice."],
+    category: "chinese",
+    secretTip: "Freeze the chicken for 20 minutes before cutting — it makes slicing into perfect cubes SO much easier!",
+    servings: 4,
+    prepTime: "15 min",
+    cookTime: "15 min",
+  },
+  {
+    title: "Classic Smash Burger",
+    description: "Crispy-edged, juicy smash burgers with melted American cheese, pickles, and a tangy special sauce. Better than any drive-through!",
+    image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=800&q=80",
+    ingredients: ["1 lb ground beef (80/20)", "4 brioche buns", "4 slices American cheese", "Dill pickle slices", "Shredded iceberg lettuce", "Sliced tomato", "Thinly sliced onion", "3 tbsp mayonnaise", "1 tbsp ketchup", "1 tbsp yellow mustard", "1 tbsp sweet pickle relish", "Salt & pepper"],
+    instructions: ["Mix mayo, ketchup, mustard, and relish to make special sauce.", "Divide ground beef into 4 equal balls (about 4 oz each).", "Heat a cast iron skillet or flat griddle over HIGH heat until smoking.", "Place beef balls on the skillet and immediately SMASH flat with a sturdy spatula.", "Season generously with salt and pepper.", "Cook without moving for 2-3 minutes until edges are deeply crispy.", "Flip, immediately place cheese on top, and cook 1-2 more minutes.", "Toast buns on the griddle for 30 seconds.", "Assemble: bottom bun, special sauce, lettuce, tomato, patty, pickles, onion, top bun."],
+    category: "fast food",
+    secretTip: "The smash must be done within 30 seconds of placing the ball on the griddle — before the fat renders out. That's what creates the incredible crust!",
+    servings: 4,
+    prepTime: "10 min",
+    cookTime: "10 min",
+  },
+  {
+    title: "Banana Bread with Walnuts",
+    description: "Incredibly moist banana bread with crunchy walnuts and a hint of brown sugar. The riper the bananas, the better the bread. Granny's most-requested recipe!",
+    image: "https://images.unsplash.com/photo-1605090930601-29d0e0022c14?w=800&q=80",
+    ingredients: ["3 very ripe bananas, mashed", "⅓ cup melted butter", "¾ cup sugar", "1 egg, beaten", "1 tsp vanilla extract", "1 tsp baking soda", "Pinch of salt", "1½ cups all-purpose flour", "½ cup chopped walnuts", "½ tsp cinnamon"],
+    instructions: ["Preheat oven to 350°F (175°C). Grease a 9x5 inch loaf pan.", "Mash bananas in a large bowl until smooth.", "Stir in melted butter.", "Mix in sugar, beaten egg, and vanilla extract.", "Sprinkle in baking soda, salt, and cinnamon. Mix well.", "Gently fold in flour until just combined.", "Fold in walnuts.", "Pour batter into prepared loaf pan.", "Bake for 55-65 minutes until a toothpick comes out clean.", "Cool in pan for 10 minutes, then turn out onto a wire rack."],
+    category: "desserts",
+    secretTip: "Freeze your overripe bananas! They become even sweeter and more flavorful. Just thaw before making the bread.",
+    servings: 8,
+    prepTime: "15 min",
+    cookTime: "60 min",
+  },
+  {
+    title: "Avocado Toast Supreme",
+    description: "Elevated avocado toast with poached eggs, everything bagel seasoning, pickled red onions, and a drizzle of chili oil. Brunch perfection!",
+    image: "https://images.unsplash.com/photo-1541519227354-08fa5d50c44d?w=800&q=80",
+    ingredients: ["2 ripe avocados", "4 slices sourdough bread", "4 eggs", "1 tbsp white vinegar", "Everything bagel seasoning", "Red pepper flakes", "Chili oil or olive oil", "Cherry tomatoes, halved", "Microgreens or arugula", "Flaky sea salt", "Lemon juice"],
+    instructions: ["Toast sourdough slices until golden and crispy.", "Mash avocados with lemon juice, salt, and pepper.", "Bring a pot of water to a gentle simmer, add vinegar.", "Create a swirl in the water and gently drop in eggs for poaching.", "Poach eggs for 3-4 minutes until whites are set but yolk is runny.", "Spread mashed avocado generously on each toast.", "Top with a poached egg.", "Garnish with cherry tomatoes, microgreens, everything seasoning, and red pepper flakes.", "Drizzle with chili oil and sprinkle with flaky sea salt."],
+    category: "breakfast",
+    secretTip: "The freshest eggs make the best poached eggs — they hold their shape much better. Test freshness by placing in water; fresh eggs sink!",
+    servings: 4,
+    prepTime: "10 min",
+    cookTime: "10 min",
+  },
+  {
+    title: "Double Chocolate Chip Cookies",
+    description: "Thick, chewy cookies loaded with dark and milk chocolate chips, with a slightly crispy edge and gooey center. Granny's cookie jar was never empty!",
+    image: "https://images.unsplash.com/photo-1499636136210-6f4ee915583e?w=800&q=80",
+    ingredients: ["2¼ cups all-purpose flour", "1 tsp baking soda", "1 tsp salt", "1 cup butter, softened", "¾ cup granulated sugar", "¾ cup packed brown sugar", "2 large eggs", "2 tsp vanilla extract", "1 cup dark chocolate chips", "1 cup milk chocolate chips", "Flaky sea salt for topping"],
+    instructions: ["Whisk flour, baking soda, and salt together in a bowl.", "Beat butter and both sugars until light and fluffy (3-4 minutes).", "Add eggs one at a time, beating after each. Add vanilla.", "Gradually mix in flour mixture until just combined.", "Fold in both types of chocolate chips.", "Refrigerate dough for at least 30 minutes (overnight is even better).", "Preheat oven to 375°F (190°C).", "Scoop rounded tablespoons of dough onto lined baking sheets.", "Bake 9-11 minutes until edges are golden but centers look underdone.", "Sprinkle with flaky sea salt immediately.", "Cool on baking sheet 5 minutes before transferring."],
+    category: "desserts",
+    secretTip: "Brown your butter first! Melt it in a pan until it turns golden and smells nutty, then let it cool before creaming with sugar. It adds an incredible toffee-like depth!",
+    servings: 36,
+    prepTime: "20 min",
+    cookTime: "10 min",
+  },
+];
+
+async function seedDefaultRecipes() {
+  const count = await Recipe.count();
+  if (count === 0) {
+    await Recipe.bulkCreate(defaultRecipes);
+    console.log('✅ 10 default recipes seeded successfully!');
+  } else {
+    console.log(`📚 Database already has ${count} recipes, skipping seed.`);
+  }
+}
+
+module.exports = seedDefaultRecipes;
